@@ -1,5 +1,5 @@
 os: osx
 osx_image: xcode9.3
 language: swift
-xcode_project: FormHoard.xcodeproj
-xcode_scheme: ForHoardTests
+script:
+  - xcodebuild test -project FormHoard.xcodeproj -scheme FormHoard -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.3' | xcpretty
