@@ -3,3 +3,8 @@ osx_image: xcode9.3
 language: swift
 script:
   - xcodebuild test -project FormHoard.xcodeproj -scheme FormHoard -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.3' | xcpretty
+notifications:
+  email:
+    recipients:
+      - fantasy0404@gmail.com
+      - jotshing@gmail.com
