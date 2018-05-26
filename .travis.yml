@@ -1,5 +1,12 @@
 os: osx
 osx_image: xcode9.3
 language: swift
+
+cache:
+  - bundler
+
+before_install:
+  - bundle install
+
 script:
-  - xcodebuild test -project FormHoard.xcodeproj -scheme FormHoard -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.3' | xcpretty
+  - bundle exec fastlane scan
