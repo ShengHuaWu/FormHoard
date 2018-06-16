@@ -1,0 +1,11 @@
+clean true
+code_coverage true
+
+project "FormHoard.xcodeproj"
+scheme "FormHoard"
+device "iPhone 8 (11.3)"
+configuration "Debug"
+
+output_directory "./fastlane/test_output"
+output_style "basic"
+output_types "junit"
