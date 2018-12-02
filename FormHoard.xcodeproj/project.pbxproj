@@ -202,9 +202,11 @@
 					};
 					9B088EEC209E3B570001B60C = {
 						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 1010;
 					};
 					9B77324F20A705DC003EA849 = {
 						CreatedOnToolsVersion = 9.3.1;
+						LastSwiftMigration = 1010;
 					};
 				};
 			};
@@ -490,7 +492,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.shenghuawu.FormHoardTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -507,7 +509,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.shenghuawu.FormHoardTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -524,7 +526,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.shenghuawu.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -541,7 +543,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.shenghuawu.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
