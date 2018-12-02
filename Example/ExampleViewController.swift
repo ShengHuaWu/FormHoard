@@ -24,9 +24,12 @@ final class ToggleCell :UICollectionViewCell {
     private(set) lazy var switcher: UISwitch = {
         let switcher = UISwitch(frame: .zero)
         switcher.translatesAutoresizingMaskIntoConstraints = false
+        switcher.addTarget(self, action: #selector(switcherValueChanged(_:)), for: .valueChanged)
         
         return switcher
     }()
+    
+    var valueChange: ((Bool) -> ())?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -46,16 +49,24 @@ final class ToggleCell :UICollectionViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    @objc func switcherValueChanged(_ sender: UISwitch) {
+        valueChange?(sender.isOn)
+    }
 }
 
 final class ExampleViewController: UICollectionViewController {
     // MARK: Properties
     private let reuseIdentifier = "ToggleCell"
+    private var toggling = Toggling(enabled: false) {
+        didSet {
+            print("\(toggling.enabled)")
+        }
+    }
 
     // MARK: View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
         
         let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout
         flowLayout?.itemSize = CGSize(width: collectionView.frame.width, height: 44)
@@ -79,6 +90,12 @@ extension ExampleViewController {
             fatalError("Unrecognized cell type")
         }
         cell.titleLabel.text = "Toggle"
+        cell.valueChange = { [weak self] isOn in
+            guard let strongSelf = self else { return }
+            
+            strongSelf.toggling.enabled = isOn
+        }
+        
         return cell
     }
 }
