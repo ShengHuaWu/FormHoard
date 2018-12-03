@@ -12,6 +12,30 @@ struct Toggling {
     var enabled: Bool
 }
 
+final class TogglerDriver {
+    private var toggling = Toggling(enabled: false) {
+        didSet {
+            print("\(toggling.enabled)")
+        }
+    }
+    
+    let cellIdentifier = "ToggleCell"
+    let cellType = ToggleCell.self
+    let title = "Toggle"
+    
+    func updateToggling(with isOn: Bool) {
+        toggling.enabled = isOn
+    }
+    
+    func dequeueCell(from collectionView: UICollectionView, for indexPath: IndexPath) -> ToggleCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as? ToggleCell else {
+            fatalError("Unrecognized cell type")
+        }
+        
+        return cell
+    }
+}
+
 final class ToggleCell :UICollectionViewCell {
     private(set) lazy var titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
@@ -57,12 +81,7 @@ final class ToggleCell :UICollectionViewCell {
 
 final class ExampleViewController: UICollectionViewController {
     // MARK: Properties
-    private let reuseIdentifier = "ToggleCell"
-    private var toggling = Toggling(enabled: false) {
-        didSet {
-            print("\(toggling.enabled)")
-        }
-    }
+    private let driver = TogglerDriver()
 
     // MARK: View Life Cycle
     override func viewDidLoad() {
@@ -71,7 +90,7 @@ final class ExampleViewController: UICollectionViewController {
         let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout
         flowLayout?.itemSize = CGSize(width: collectionView.frame.width, height: 44)
         
-        collectionView!.register(ToggleCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        collectionView!.register(driver.cellType, forCellWithReuseIdentifier: driver.cellIdentifier)
     }
 }
 
@@ -86,15 +105,9 @@ extension ExampleViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? ToggleCell else {
-            fatalError("Unrecognized cell type")
-        }
-        cell.titleLabel.text = "Toggle"
-        cell.valueChange = { [weak self] isOn in
-            guard let strongSelf = self else { return }
-            
-            strongSelf.toggling.enabled = isOn
-        }
+        let cell = driver.dequeueCell(from: collectionView, for: indexPath)
+        cell.titleLabel.text = driver.title
+        cell.valueChange = driver.updateToggling
         
         return cell
     }
