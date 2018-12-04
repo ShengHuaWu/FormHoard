@@ -9,34 +9,52 @@
 import UIKit
 
 struct Toggling {
+    let title: String
     var enabled: Bool
+    
+    init(title: String, enabled: Bool = false) {
+        self.title = title
+        self.enabled = enabled
+    }
 }
 
-final class TogglerDriver {
-    private var toggling = Toggling(enabled: false) {
+func buildToggleCell(with driver: Driver<Toggling>, from collectionView: UICollectionView, for indexPath: IndexPath) -> ToggleCell {
+    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ToggleCell.cellIdentifier, for: indexPath) as? ToggleCell else {
+        fatalError("Unrecognized cell type")
+    }
+    
+    cell.titleLabel.text = driver.getValue(from: \.title)
+    cell.switcher.isOn = driver.getValue(from: \.enabled)
+    cell.valueChange = { isOn in
+        driver.update(\.enabled, with: isOn)
+    }
+    
+    return cell
+}
+
+final class Driver<Element> {
+    private var element: Element {
         didSet {
-            print("\(toggling.enabled)")
+            print("\(element)")
         }
     }
     
-    let cellIdentifier = "ToggleCell"
-    let cellType = ToggleCell.self
-    let title = "Toggle"
-    
-    func updateToggling(with isOn: Bool) {
-        toggling.enabled = isOn
+    init(element: Element) {
+        self.element = element
     }
     
-    func dequeueCell(from collectionView: UICollectionView, for indexPath: IndexPath) -> ToggleCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as? ToggleCell else {
-            fatalError("Unrecognized cell type")
-        }
-        
-        return cell
+    func update<Value>(_ kp: WritableKeyPath<Element, Value>, with value: Value) {
+        element[keyPath: kp] = value
+    }
+    
+    func getValue<Value>(from kp: KeyPath<Element, Value>) -> Value {
+        return element[keyPath: kp]
     }
 }
 
 final class ToggleCell :UICollectionViewCell {
+    static let cellIdentifier = "ToggleCell"
+    
     private(set) lazy var titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -81,7 +99,7 @@ final class ToggleCell :UICollectionViewCell {
 
 final class ExampleViewController: UICollectionViewController {
     // MARK: Properties
-    private let driver = TogglerDriver()
+    private let driver = Driver<Toggling>(element: Toggling(title: "Toggle"))
 
     // MARK: View Life Cycle
     override func viewDidLoad() {
@@ -90,7 +108,7 @@ final class ExampleViewController: UICollectionViewController {
         let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout
         flowLayout?.itemSize = CGSize(width: collectionView.frame.width, height: 44)
         
-        collectionView!.register(driver.cellType, forCellWithReuseIdentifier: driver.cellIdentifier)
+        collectionView!.register(ToggleCell.self, forCellWithReuseIdentifier: ToggleCell.cellIdentifier)
     }
 }
 
@@ -105,10 +123,7 @@ extension ExampleViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = driver.dequeueCell(from: collectionView, for: indexPath)
-        cell.titleLabel.text = driver.title
-        cell.valueChange = driver.updateToggling
-        
+        let cell = buildToggleCell(with: driver, from: collectionView, for: indexPath)
         return cell
     }
 }
