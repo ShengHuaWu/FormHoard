@@ -10,6 +10,7 @@
 		9B088EEE209E3B570001B60C /* FormHoard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B088EE4209E3B570001B60C /* FormHoard.framework */; };
 		9B088EF3209E3B570001B60C /* FormHoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B088EF2209E3B570001B60C /* FormHoardTests.swift */; };
 		9B088EF5209E3B570001B60C /* FormHoard.h in Headers */ = {isa = PBXBuildFile; fileRef = 9B088EE7209E3B570001B60C /* FormHoard.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9B54F05E21B86B5600AE6D28 /* Cells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B54F05D21B86B5600AE6D28 /* Cells.swift */; };
 		9B77325320A705DC003EA849 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B77325220A705DC003EA849 /* AppDelegate.swift */; };
 		9B77325820A705DC003EA849 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B77325620A705DC003EA849 /* Main.storyboard */; };
 		9B77325A20A705DE003EA849 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9B77325920A705DE003EA849 /* Assets.xcassets */; };
@@ -34,6 +35,7 @@
 		9B088EED209E3B570001B60C /* FormHoardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FormHoardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B088EF2209E3B570001B60C /* FormHoardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormHoardTests.swift; sourceTree = "<group>"; };
 		9B088EF4209E3B570001B60C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9B54F05D21B86B5600AE6D28 /* Cells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cells.swift; sourceTree = "<group>"; };
 		9B77325020A705DC003EA849 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B77325220A705DC003EA849 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9B77325720A705DC003EA849 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 				9B77325920A705DE003EA849 /* Assets.xcassets */,
 				9B77325B20A705DE003EA849 /* LaunchScreen.storyboard */,
 				9B77325E20A705DE003EA849 /* Info.plist */,
+				9B54F05D21B86B5600AE6D28 /* Cells.swift */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -278,6 +281,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B77325320A705DC003EA849 /* AppDelegate.swift in Sources */,
+				9B54F05E21B86B5600AE6D28 /* Cells.swift in Sources */,
 				9B77326320A7061B003EA849 /* ExampleViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
