@@ -29,7 +29,12 @@ struct Texting {
 }
 
 struct Section {
-    let numberOfItems = 2
+    enum Item: Int, CaseIterable {
+        case toggling
+        case texting
+    }
+    
+    let numberOfItems = Item.allCases.count
     
     var toggling: Toggling
     var texting: Texting
@@ -63,11 +68,17 @@ func buildTextCell(with driver: Driver<Section>, from collectionView: UICollecti
     return cell
 }
 
-func buildCellsInSection(with driver: Driver<Section>, from collectionView: UICollectionView, for indexPath: IndexPath) -> [UICollectionViewCell] {
-    return [
-        buildToggleCell(with: driver, from: collectionView, for: indexPath),
-        buildTextCell(with: driver, from: collectionView, for: indexPath)
-    ]
+func buildCellInSection(with driver: Driver<Section>, from collectionView: UICollectionView, for indexPath: IndexPath) -> UICollectionViewCell {
+    guard let item = Section.Item(rawValue: indexPath.item) else {
+        fatalError("Item doesn't exist.")
+    }
+    
+    switch item {
+    case .toggling:
+        return buildToggleCell(with: driver, from: collectionView, for: indexPath)
+    case .texting:
+        return buildTextCell(with: driver, from: collectionView, for: indexPath)
+    }
 }
 
 final class Driver<Element> {
@@ -119,6 +130,6 @@ extension ExampleViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return buildCellsInSection(with: driver, from: collectionView, for: indexPath)[indexPath.item]
+        return buildCellInSection(with: driver, from: collectionView, for: indexPath)
     }
 }
