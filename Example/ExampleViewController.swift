@@ -28,7 +28,7 @@ struct Texting {
     }
 }
 
-struct Section {
+struct FormSection {
     enum Item: Int, CaseIterable {
         case toggling
         case texting
@@ -40,36 +40,48 @@ struct Section {
     var texting: Texting
 }
 
-func buildToggleCell(with driver: Driver<Section>, from collectionView: UICollectionView, for indexPath: IndexPath) -> ToggleCell {
+struct FormInfo {
+    enum Section: Int, CaseIterable {
+        case first
+        case second
+    }
+    
+    let numberOfSections = Section.allCases.count
+    
+    var first: FormSection
+    var second: FormSection
+}
+
+func buildToggleCell(with driver: Driver<FormInfo>, from collectionView: UICollectionView, for indexPath: IndexPath) -> ToggleCell {
     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ToggleCell.cellIdentifier, for: indexPath) as? ToggleCell else {
         fatalError("Unrecognized cell type")
     }
     
-    cell.titleLabel.text = driver.getValue(from: \.toggling.title)
-    cell.switcher.isOn = driver.getValue(from: \.toggling.enabled)
+    cell.titleLabel.text = driver.getValue(from: \.first.toggling.title)
+    cell.switcher.isOn = driver.getValue(from: \.first.toggling.enabled)
     cell.valueChange = { isOn in
-        driver.update(\.toggling.enabled, with: isOn)
+        driver.update(\.first.toggling.enabled, with: isOn)
     }
     
     return cell
 }
 
-func buildTextCell(with driver: Driver<Section>, from collectionView: UICollectionView, for indexPath: IndexPath) -> TextCell {
+func buildTextCell(with driver: Driver<FormInfo>, from collectionView: UICollectionView, for indexPath: IndexPath) -> TextCell {
     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TextCell.cellIdentifier, for: indexPath) as? TextCell else {
         fatalError("Unrecognized cell type")
     }
     
-    cell.titleLabel.text = driver.getValue(from: \.texting.title)
-    cell.textField.text = driver.getValue(from: \.texting.text)
+    cell.titleLabel.text = driver.getValue(from: \.second.texting.text)
+    cell.textField.text = driver.getValue(from: \.second.texting.text)
     cell.valueChange = { text in
-        driver.update(\.texting.text, with: text)
+        driver.update(\.second.texting.text, with: text)
     }
     
     return cell
 }
 
-func buildCellInSection(with driver: Driver<Section>, from collectionView: UICollectionView, for indexPath: IndexPath) -> UICollectionViewCell {
-    guard let item = Section.Item(rawValue: indexPath.item) else {
+func buildCellInSection(with driver: Driver<FormInfo>, from collectionView: UICollectionView, for indexPath: IndexPath) -> UICollectionViewCell {
+    guard let item = FormSection.Item(rawValue: indexPath.item) else {
         fatalError("Item doesn't exist.")
     }
     
@@ -78,6 +90,32 @@ func buildCellInSection(with driver: Driver<Section>, from collectionView: UICol
         return buildToggleCell(with: driver, from: collectionView, for: indexPath)
     case .texting:
         return buildTextCell(with: driver, from: collectionView, for: indexPath)
+    }
+}
+
+func numberOfItems(in section: Int, with driver: Driver<FormInfo>) -> Int {
+    guard let section = FormInfo.Section(rawValue: section) else {
+        fatalError("Section doesn't exist.")
+    }
+    
+    switch section {
+    case .first:
+        return driver.getValue(from: \.first.numberOfItems)
+    case .second:
+        return driver.getValue(from: \.second.numberOfItems)
+    }
+}
+
+func buildCellInForm(with driver: Driver<FormInfo>, from collectionView: UICollectionView, for indexPath: IndexPath) -> UICollectionViewCell {
+    guard let section = FormInfo.Section(rawValue: indexPath.section) else {
+        fatalError("Section doesn't exist.")
+    }
+    
+    switch section {
+    case .first:
+        return buildCellInSection(with: driver, from: collectionView, for: indexPath)
+    case .second:
+        return buildCellInSection(with: driver, from: collectionView, for: indexPath)
     }
 }
 
@@ -103,9 +141,20 @@ final class Driver<Element> {
 
 final class ExampleViewController: UICollectionViewController {
     // MARK: Properties
-    private let driver = Driver<Section>(element: Section(
-        toggling: Toggling(title: "Toggle"),
-        texting: Texting(title: "Text", text: "Nothing")))
+    private let driver = Driver<FormInfo>(element:
+        FormInfo(
+            first:
+                FormSection(
+                    toggling: Toggling(title: "Toggle"),
+                    texting: Texting(title: "Text", text: "Nothing")
+                ),
+            second:
+                FormSection(
+                    toggling: Toggling(title: "Toggle"),
+                    texting: Texting(title: "Text", text: "Nothing")
+                )
+        )
+    )
 
     // MARK: View Life Cycle
     override func viewDidLoad() {
@@ -122,11 +171,11 @@ final class ExampleViewController: UICollectionViewController {
 // MARK: - UICollectionViewDataSource
 extension ExampleViewController {
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+        return driver.getValue(from: \.numberOfSections)
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return driver.getValue(from: \.numberOfItems)
+        return numberOfItems(in: section, with: driver)
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
